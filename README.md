@@ -1,4 +1,63 @@
-# Getting Started with Create React App
+# **Online Learning Platform - Frontend**
+
+This project is the frontend of an Online Learning Platform, built using **React.js** with **Material-UI (MUI)** for styling. The platform allows students to enroll in courses and provides an admin panel for managing courses, students, and enrollments.
+
+## **Table of Contents**
+
+- [Project Setup](#project-setup)
+- [Key Features](#key-features)
+
+## **Project Setup**
+
+To set up the project locally, follow these steps:
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/your-username/online-learning-platform-frontend.git
+
+   ```
+
+2. **Navigate to the project directory:**
+
+   ```bash
+   cd online-learning-platform-frontend
+
+   ```
+
+3. **Install the dependencies:**
+
+   ```bash
+   npm install
+
+   ```
+
+4. **Start the development server:**
+
+   ```bash
+   npm start
+   ```
+
+The app will run on `http://localhost:3000`.
+
+## **Key Features**
+
+\*User Authentication:
+
+    - Students can register, log in, and log out.
+    - Admins can log in to manage the platform.
+
+\*Admin Panel:
+
+    - Courses Management: Add, update, and delete courses.
+    - Students Management: Manage student details.
+    - Enrollments Management: Manage student enrollments.
+
+\*Responsive Design:
+
+    - Built with Material-UI, the platform is fully    responsive and optimized for various screen sizes.
+
+<!-- # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -67,4 +126,4 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 ### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify) -->

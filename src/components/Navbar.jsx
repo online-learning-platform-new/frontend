@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../UserContext';
 
 function Navbar() {
+  const { user, handleLogout } = useContext(UserContext);
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -12,15 +15,34 @@ function Navbar() {
         <Button color="inherit" component={Link} to="/">
           Home
         </Button>
-        <Button color="inherit" component={Link} to="/courses">
-          Courses
-        </Button>
-        <Button color="inherit" component={Link} to="/login">
-          Login
-        </Button>
-        <Button color="inherit" component={Link} to="/register">
-          Register
-        </Button>
+        {user && (
+          <>
+            
+            {user.role === 'admin' && (
+              <Button color="inherit" component={Link} to="/dashboard">
+                Dashboard
+              </Button>
+            )}
+            {user.role === 'student' && (
+              <Button color="inherit" component={Link} to="/courses">
+                Courses
+              </Button>
+            )}
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          </>
+        )}
+        {!user && (
+          <>
+            <Button color="inherit" component={Link} to="/login">
+              Login
+            </Button>
+            <Button color="inherit" component={Link} to="/register">
+              Register
+            </Button>
+          </>
+        )}
       </Toolbar>
     </AppBar>
   );
