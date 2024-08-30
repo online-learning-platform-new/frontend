@@ -11,16 +11,22 @@ function StudentsManagement() {
   ];
   const [students, setStudents] = useState(temp_students);
   const [open, setOpen] = useState(false);
-  const [newStudent, setNewStudent] = useState({ firstName: '', lastName: '', email: '' });
+  const [newStudent, setNewStudent] = useState({ first_name: '', last_name: '', email: '' });
   const [editingStudent, setEditingStudent] = useState(null); // State to track the student being edited
   const [errors, setErrors] = useState({});
+  const token = localStorage.getItem("authToken");
 
 
   useEffect(() => {
     // Fetch all students from the API
-    axios.get('http://localhost:5000/api/students')
+    const token = localStorage.getItem("authToken");
+    axios.get('http://localhost:5000/api/students', {
+      headers: {
+        Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+      },
+    })
       .then(response => {
-        setStudents(response.data);
+        setStudents(response.data.students);
       })
       .catch(error => {
         console.error('Error fetching students:', error);
@@ -49,8 +55,8 @@ function StudentsManagement() {
   const validate = () => {
     let tempErrors = {};
   
-    if (!newStudent.firstName.trim()) tempErrors.firstName = "First name is required.";
-    if (!newStudent.lastName.trim()) tempErrors.lastName = "Last Name is required.";
+    if (!newStudent.first_name.trim()) tempErrors.first_name = "First name is required.";
+    if (!newStudent.last_name.trim()) tempErrors.last_name = "Last Name is required.";
     if (!newStudent.email) {
         tempErrors.email = 'Email is required';
       } else if (!validateEmail(newStudent.email)) {
@@ -138,8 +144,8 @@ function StudentsManagement() {
         <TableBody>
           {students.map(student => (
             <TableRow key={student.id}>
-              <TableCell>{student.firstName}</TableCell>
-              <TableCell>{student.lastName}</TableCell>
+              <TableCell>{student.first_name}</TableCell>
+              <TableCell>{student.last_name}</TableCell>
               <TableCell>{student.email}</TableCell>
               <TableCell>
                 <Button color="primary" onClick={() => handleEditStudent(student)}><EditRoundedIcon/></Button>
@@ -154,24 +160,24 @@ function StudentsManagement() {
         <DialogTitle>{editingStudent ? 'Update Student' : 'Add New Student'}</DialogTitle>
         <DialogContent>
           <TextField
-            name="name"
-            label="Student Name"
+            name="first_name"
+            label="First Name"
             fullWidth
             margin="normal"
-            value = {newStudent.firstName}
+            value = {newStudent.first_name}
             onChange={handleInputChange}
-            error={!!errors.firstName}
-            helperText={errors.firstName}
+            error={!!errors.first_name}
+            helperText={errors.first_name}
           />
           <TextField
-            name="name"
-            label="Student Name"
+            name="last_name"
+            label="Last Name"
             fullWidth
             margin="normal"
-            value = {newStudent.lastName}
+            value = {newStudent.last_name}
             onChange={handleInputChange}
-            error={!!errors.lastName}
-            helperText={errors.lastName}
+            error={!!errors.last_name}
+            helperText={errors.last_name}
           />
           <TextField
             name="email"

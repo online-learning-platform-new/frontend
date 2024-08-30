@@ -19,64 +19,21 @@ import {
   Paper,
 } from "@mui/material";
 import axios from "axios";
-// import IconButton from '@mui/material/IconButton';
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import { addCourse } from "../services/api";
+import { updateCourse, deleteCourse, getCourses } from "../services/api";
 
 function CoursesManagement() {
-  let temp_courses = [
-    {
-      id: 1,
-      name: "Course 1",
-      description: "Description of Course 1",
-      instructor: "Dr. ABS",
-      duration: "6 months",
-    },
-    {
-      id: 2,
-      name: "Course 2",
-      description: "Description of Course 2",
-      instructor: "Dr. ABS",
-      duration: "6 months",
-    },
-    {
-      id: 3,
-      name: "Course 3",
-      description: "Description of Course 3",
-      instructor: "Dr. ABS",
-      duration: "6 months",
-    },
-    {
-      id: 4,
-      name: "Course 4",
-      description: "Description of Course 4",
-      instructor: "Dr. ABS",
-      duration: "6 months",
-    },
-    {
-      id: 5,
-      name: "Course 5",
-      description: "Description of Course 5",
-      instructor: "Dr. ABS",
-      duration: "6 months",
-    },
-    {
-      id: 6,
-      name: "Course 6",
-      description: "Description of Course 6",
-      instructor: "Dr. ABS",
-      duration: "3 months",
-    },
-  ];
-  const [courses, setCourses] = useState(temp_courses);
+  const [courses, setCourses] = useState([]);
   const [open, setOpen] = useState(false);
   const [newCourse, setNewCourse] = useState({
-    name: "",
+    title: "",
     description: "",
-    instructor: "",
-    duration: "",
+    start_date: "",
+    end_date: "",
   });
-  const [editingCourse, setEditingCourse] = useState(null); // State to track the course being edited
+  const [editingCourse, setEditingCourse] = useState(null);
   const [errors, setErrors] = useState({});
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -93,25 +50,33 @@ function CoursesManagement() {
   const validate = () => {
     let tempErrors = {};
 
-    if (!newCourse.name.trim()) tempErrors.name = "Course name is required.";
+    if (!newCourse.title.trim()) tempErrors.title = "Course title is required.";
     if (!newCourse.description.trim())
       tempErrors.description = "Course description is required.";
-    if (!newCourse.instructor.trim())
-      tempErrors.instructor = "Instructor name is required.";
-    if (!newCourse.duration.trim())
-      tempErrors.duration = "Course duration is required.";
+    if (!newCourse.start_date.trim())
+      tempErrors.start_date = "Start date is required.";
+    if (!newCourse.end_date.trim())
+      tempErrors.end_date = "Course end date is required.";
 
     setErrors(tempErrors);
 
     return Object.keys(tempErrors).length === 0;
   };
 
-  useEffect(() => {
+  useEffect( () => {
     // Fetch all courses from the API
+    // try {
+    //   const response = await getCourses();
+    //   setCourses(response.data.courses);
+    //   console.log("courses loading: ", courses);
+    // } catch (error) {
+    //   console.error("Error fetching courses:", error);
+    // }
     axios
       .get("http://localhost:5000/api/courses")
       .then((response) => {
-        setCourses(response.data);
+        setCourses(response.data.courses);
+        console.log("courses loading: ", courses);
       })
       .catch((error) => {
         console.error("Error fetching courses:", error);
@@ -123,71 +88,57 @@ function CoursesManagement() {
     console.log(newCourse);
   };
 
-  //   const handleAddCourse = () => {
-
-  //     // axios.post('http://localhost:5000/api/courses', newCourse)
-  //     //   .then(response => {
-  //     //     setCourses([...courses, response.data]);
-  //     //     setOpen(false);
-  //     //   })
-  //     //   .catch(error => {
-  //     //     console.error('Error adding course:', error);
-  //     //   });
-  //   };
-
-  const handleAddOrUpdateCourse = () => {
+  const handleAddOrUpdateCourse = async () => {
     if (!validate()) return;
 
     if (editingCourse) {
       console.log(editingCourse);
-      temp_courses[editingCourse.id - 1] = newCourse;
       // Update existing course
-      //   axios.put(`http://localhost:5000/api/courses/${editingCourse.id}`, newCourse)
-      //     .then(response => {
-      //       setCourses(courses.map(course => course.id === editingCourse.id ? response.data : course));
-      //       setEditingCourse(null);
-      //       setOpen(false);
-      //     })
-      //     .catch(error => {
-      //       console.error('Error updating course:', error);
-      //     });
+      try {
+        const response = await updateCourse(editingCourse.id, newCourse);
+        console.log("Course updated:", response.data);
+        setCourses(
+          courses.map((course) =>
+            course.id === editingCourse.id ? response.data.course : course
+          )
+        );
+        setEditingCourse(null);
+        setOpen(false);
+      } catch (error) {
+        console.error("Error updating course:", error);
+      }
     } else {
-      temp_courses.push({ id: courses.length + 1, ...newCourse });
-      // Add new course
-      //   axios.post('http://localhost:5000/api/courses', newCourse)
-      //     .then(response => {
-      //       setCourses([...courses, response.data]);
-      //       setOpen(false);
-      //     })
-      //     .catch(error => {
-      //       console.error('Error adding course:', error);
-      //     });
+      try {
+        console.log("newCourse: ", newCourse);
+        const response = await addCourse(newCourse);
+        console.log("Course added:", response.data);
+        setCourses([...courses, response.data.course]);
+        setOpen(false);
+      } catch (error) {
+        console.error("Error adding course:", error);
+      }
     }
-    console.log(temp_courses);
-    setCourses(temp_courses);
     setOpen(false);
   };
 
-  const handleDeleteCourse = (id) => {
-    setCourses(temp_courses.filter((c) => c.id !== id));
-    // axios.delete(`http://localhost:5000/api/courses/${id}`)
-    //   .then(() => {
-    //     setCourses(courses.filter(course => course.id !== id));
-    //   })
-    //   .catch(error => {
-    //     console.error('Error deleting course:', error);
-    //   });
+  const handleDeleteCourse = async (id) => {
+    try {
+      const response = await deleteCourse(id);
+      setCourses(courses.filter((course) => course.id !== id));
+    } catch (error) {
+      console.error("Error deleting course:", error);
+    }
   };
 
   const handleEditCourse = (course) => {
     setEditingCourse(course);
-    setNewCourse(course); // Pre-fill the form with the course details
+    setNewCourse(course);
     setOpen(true);
   };
 
   const handleCloseDialog = () => {
     setEditingCourse(null);
-    setNewCourse({ name: "", description: "", instructor: "", duration: "" });
+    setNewCourse({ title: "", description: "", start_date: "", end_date: "" });
     setOpen(false);
   };
 
@@ -196,7 +147,12 @@ function CoursesManagement() {
       <Typography variant="h6" gutterBottom>
         Manage Courses
       </Typography>
-      <Button variant="contained" color="primary" onClick={() => setOpen(true)} sx={{ mb: 2 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setOpen(true)}
+        sx={{ mb: 2 }}
+      >
         Add New Course
       </Button>
       <Paper sx={{ width: "100%", overflow: "hidden", mb: 4 }}>
@@ -204,38 +160,62 @@ function CoursesManagement() {
           <Table stickyHeader aria-label="sticky table" sx={{ mt: 2 }}>
             <TableHead>
               <TableRow>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>Name</TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>Description</TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>Instructor</TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>Duration</TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>Actions</TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Title
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Description
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Start Date
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  End Date
+                </TableCell>
+                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {courses
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((course) => (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={course.id}>
-                    <TableCell align="center">{course.name}</TableCell>
-                    <TableCell align="center">{course.description}</TableCell>
-                    <TableCell align="center">{course.instructor}</TableCell>
-                    <TableCell align="center">{course.duration}</TableCell>
-                    <TableCell align="center">
-                      <Button
-                        color="primary"
-                        onClick={() => handleEditCourse(course)}
-                      >
-                        <EditRoundedIcon />
-                      </Button>
-                      <Button
-                        color="secondary"
-                        onClick={() => handleDeleteCourse(course.id)}
-                      >
-                        <DeleteRoundedIcon />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {console.log("courses: ", courses)}
+              {Array.isArray(courses) && courses.length > 0 ? (
+                courses
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((course) => (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      tabIndex={-1}
+                      key={course.id}
+                    >
+                      <TableCell align="center">{course.title}</TableCell>
+                      <TableCell align="center">{course.description}</TableCell>
+                      <TableCell align="center">{course.start_date}</TableCell>
+                      <TableCell align="center">{course.end_date}</TableCell>
+                      <TableCell align="center">
+                        <Button
+                          color="primary"
+                          onClick={() => handleEditCourse(course)}
+                        >
+                          <EditRoundedIcon />
+                        </Button>
+                        <Button
+                          color="secondary"
+                          onClick={() => handleDeleteCourse(course.id)}
+                        >
+                          <DeleteRoundedIcon />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    No courses available
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -256,14 +236,14 @@ function CoursesManagement() {
         </DialogTitle>
         <DialogContent>
           <TextField
-            name="name"
-            label="Course Name"
+            name="title"
+            label="Course Title"
             fullWidth
             margin="normal"
-            value={newCourse.name}
+            value={newCourse.title}
             onChange={handleInputChange}
-            error={!!errors.name}
-            helperText={errors.name}
+            error={!!errors.title}
+            helperText={errors.title}
           />
           <TextField
             name="description"
@@ -276,24 +256,24 @@ function CoursesManagement() {
             helperText={errors.description}
           />
           <TextField
-            name="instructor"
-            label="Course Instructor"
+            name="start_date"
+            label="Course Start Date"
             fullWidth
             margin="normal"
-            value={newCourse.instructor}
+            value={newCourse.start_date}
             onChange={handleInputChange}
-            error={!!errors.instructor}
-            helperText={errors.instructor}
+            error={!!errors.start_date}
+            helperText={errors.start_date}
           />
           <TextField
-            name="duration"
-            label="Course Duration"
+            name="end_date"
+            label="Course End Date"
             fullWidth
             margin="normal"
-            value={newCourse.duration}
+            value={newCourse.end_date}
             onChange={handleInputChange}
-            error={!!errors.duration}
-            helperText={errors.duration}
+            error={!!errors.end_date}
+            helperText={errors.end_date}
           />
         </DialogContent>
         <DialogActions>

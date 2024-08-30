@@ -5,7 +5,7 @@ import { UserContext } from '../UserContext';
 
 function Navbar() {
   const { user, handleLogout } = useContext(UserContext);
-
+  console.log('navbar user: ', user);
   return (
     <AppBar position="static">
       <Toolbar>
