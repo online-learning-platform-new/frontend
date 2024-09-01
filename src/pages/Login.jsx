@@ -61,6 +61,7 @@ function Login() {
       console.log("Successful student login:", response.data);
       localStorage.setItem('authToken', response.data.token);
       console.log('Token saved to localStorage:', response.data.token);
+      localStorage.setItem('student_id', response.data.student_id);
       const mockUser = {
         token: response.data.token,
         role: "student",

@@ -31,16 +31,16 @@ function CourseCard({ course , isEnrolled}) {
     >
       <CardContent>
         <Typography variant="h5" component="div">
-          {course.name}
+          {course.title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {course.description}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {course.instructor}
+          {course.start_date}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {course.duration}
+          {course.end_date}
         </Typography>
       </CardContent>
       {!isEnrolled && (
@@ -133,23 +133,29 @@ function Courses() {
   ];
   const [courses, setCourses] = useState(temp_courses);
   const [enrolledCourses, setEnrolledCourses] = useState(temp_enrolledCourses);
+  const student_id = localStorage.getItem('student_id');
+  console.log('student_id', student_id);
+  const token = localStorage.getItem("authToken");
 
   useEffect(() => {
     // Fetch all courses that the user hasn't enrolled
     axios
-      .get("http://localhost:5000/api/all_courses/{id}")
+      .get(`http://localhost:5000/api/enrollments/student/${student_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },})
       .then((response) => {
         setCourses(response.data);
       })
       .catch((error) => {
         console.error("Error fetching courses:", error);
       });
-  }, []);
+  }, [student_id]);
 
   useEffect(() => {
     // Fetch all courses that the user has enrolled
     axios
-      .get("http://localhost:5000/api/courses/{id}")
+      .get(`http://localhost:5000/api/enrollments/non-enrollments/${student_id}`)
       .then((response) => {
         setEnrolledCourses(response.data);
       })

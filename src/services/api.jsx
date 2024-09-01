@@ -59,24 +59,24 @@ export const logout = () => {
 
 // Courses API
 export const getCourses = () => {
-    return api.get("/courses");
-}
+  return api.get("/courses");
+};
 
 export const getCourseById = (id) => {
-    const token = localStorage.getItem("authToken");
-    return api.get(`/courses/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-        },
-      });
-}
+  const token = localStorage.getItem("authToken");
+  return api.get(`/courses/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export const addCourse = (courseData) => {
   const token = localStorage.getItem("authToken");
   console.log("token from post add course:", token);
   return api.post("/courses", courseData, {
     headers: {
-      Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+      Authorization: `Bearer ${token}`,
     },
   });
 };
@@ -86,49 +86,92 @@ export const updateCourse = (id, courseData) => {
   console.log("token from post add course:", token);
   return api.put(`/courses/${id}`, courseData, {
     headers: {
-      Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+      Authorization: `Bearer ${token}`,
     },
   });
 };
 
 export const deleteCourse = (id) => {
-    const token = localStorage.getItem("authToken");
-    api.delete(`/courses/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-        },
-      });
-}
+  const token = localStorage.getItem("authToken");
+  return api.delete(`/courses/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 // Students API
 export const getStudents = () => {
-    const token = localStorage.getItem("authToken");
-    return api.get("/students", {
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-        },
-      });
-}
+  const token = localStorage.getItem("authToken");
+  return api.get("/students", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export const getStudentById = (id) => {
-    const token = localStorage.getItem("authToken");
-    return api.get(`/students/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
-        },
-      });
-}
+  const token = localStorage.getItem("authToken");
+  return api.get(`/students/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
-export const addStudent = (studentData) => api.post("/students", studentData);
+export const addStudent = (studentData) => {
+  const token = localStorage.getItem("authToken");
+  return api.post("/students", studentData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
-export const updateStudent = (id, studentData) =>
-  api.put(`/students/${id}`, studentData);
-export const deleteStudent = (id) => api.delete(`/students/${id}`);
+export const updateStudent = (id, studentData) => {
+  const token = localStorage.getItem("authToken");
+  return api.put(`/students/${id}`, studentData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deleteStudent = (id) => {
+  const token = localStorage.getItem("authToken");
+  return api.delete(`/students/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 // Enrollments API
-export const getEnrollments = () => api.get("/enrollments");
-export const addEnrollment = (enrollmentData) =>
-  api.post("/enrollments", enrollmentData);
-export const deleteEnrollment = (id) => api.delete(`/enrollments/${id}`);
+export const getEnrollments = () => {
+  const token = localStorage.getItem("authToken");
+  return api.get("/enrollments", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const addEnrollment = (enrollmentData) => {
+  const token = localStorage.getItem("authToken");
+  return api.post("/enrollments", enrollmentData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const deleteEnrollment = (id) => {
+  const token = localStorage.getItem("authToken");
+  return api.delete(`/enrollments/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
 
 export default api;
